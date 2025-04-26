@@ -1,3 +1,13 @@
+# Stage 1: Build React frontend
+FROM node:16-alpine as frontend
+
+WORKDIR /app/frontend
+
+COPY frontend/package*.json ./
+RUN npm install
+
+COPY frontend/ ./
+RUN npm run build
 
 # Stage 2: Django backend setup
 FROM python:3.11-slim as backend
@@ -32,5 +42,5 @@ COPY --from=frontend /app/frontend/build /app/frontend/build/
 EXPOSE 8000
 
 # Run server using virtual environment python
-CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
